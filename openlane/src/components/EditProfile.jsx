@@ -1,8 +1,23 @@
-import React, { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { Container, TextField, Button, Typography, Box, Grid, MenuItem } from '@mui/material';
-import { toast } from 'react-toastify';
-import { validateEmail, validatePassword, validateName, validatePhoneNumber, validateColour, checkUserDoesNotExist } from '../util';
+import React, { useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import {
+  Container,
+  TextField,
+  Button,
+  Typography,
+  Box,
+  Grid,
+  MenuItem,
+} from "@mui/material";
+import { toast } from "react-toastify";
+import {
+  validateEmail,
+  validatePassword,
+  validateName,
+  validatePhoneNumber,
+  validateColour,
+  checkUserDoesNotExist,
+} from "../util";
 
 function EditProfile() {
   const navigate = useNavigate();
@@ -21,88 +36,117 @@ function EditProfile() {
   const [phoneError, setPhoneError] = useState(false);
   const [colourError, setColourError] = useState(false);
 
-
   const resetErrors = () => {
     setEmailError(false);
     setColourError(false);
     setNameError(false);
     setPasswordError(false);
     setPhoneError(false);
-  }
+  };
 
-    const validateForm = () => {
-        resetErrors(); 
-        const userExists = checkUserDoesNotExist(email)
-        const isEmailValid = validateEmail(email);
-        const isNameValid = validateName(fullName);
-        const isPasswordValid = validatePassword(password);
-        const isPhoneNumberValid = validatePhoneNumber(phoneNumber);
-        const isColourValid = validateColour(favoriteColor);
-        
-        if(!isEmailValid){
-            setEmailError('Please enter a valid email that follows the format test@example.com');
-        }
-        if(email !== user.email){
-            if(!userExists){
-                setEmailError('This user already exists please enter another email');
-            }
-        }
-        
-        if(!isNameValid){
-            setNameError('Name must be longer than 3 characters');
-        }
-        if(!isPasswordValid){
-            setPasswordError('Password must be between 10-32 characters, with 2 uppercase letters, 2 numbers and 1 special character');
-        }
-        if(!isPhoneNumberValid){
-            setPhoneError('Please enter a valid phone number such as +1 561 512 8712');
-        }
-        if(!isColourValid){
-            console.log('not valid colour')
-            setColourError(true);
-        }
-        return (isEmailValid || userExists) && isNameValid &&  isPasswordValid && isPhoneNumberValid && isColourValid
+  const validateForm = () => {
+    resetErrors();
+    const userExists = checkUserDoesNotExist(email);
+    const isEmailValid = validateEmail(email);
+    const isNameValid = validateName(fullName);
+    const isPasswordValid = validatePassword(password);
+    const isPhoneNumberValid = validatePhoneNumber(phoneNumber);
+    const isColourValid = validateColour(favoriteColor);
+
+    if (!isEmailValid) {
+      setEmailError(
+        "Please enter a valid email that follows the format test@example.com"
+      );
+    }
+    if (email !== user.email) {
+      if (!userExists) {
+        setEmailError("This user already exists please enter another email");
+      }
     }
 
-    const handleSave = () => {
-   
-        //resetErrors();
-        const validForm = validateForm();
-    
-        if(!validForm){
-            console.log('Fix errors');
-            return;
-        }
-        const updatedUser = { ...user, name: fullName, email, password, phoneNumber, favoriteColor };
-        let registeredAccounts = JSON.parse(localStorage.getItem('registeredAccounts')) || [];
-    
-        registeredAccounts = registeredAccounts.map(account =>
-          account.email === user.email ? updatedUser : account
-        );
-    
-        localStorage.setItem('registeredAccounts', JSON.stringify(registeredAccounts));
-        toast.success('Information saved successful!');
-        navigate('/profile', { state: { user: updatedUser } });
-      };
-    
-      const handleCancel = () => {
-        navigate('/profile', { state: { user } });
-      };
+    if (!isNameValid) {
+      setNameError("Name must be longer than 3 characters");
+    }
+    if (!isPasswordValid) {
+      setPasswordError(
+        "Password must be between 10-32 characters, with 2 uppercase letters, 2 numbers and 1 special character"
+      );
+    }
+    if (!isPhoneNumberValid) {
+      setPhoneError(
+        "Please enter a valid phone number such as +1 561 512 8712"
+      );
+    }
+    if (!isColourValid) {
+      setColourError(true);
+    }
+    return (
+      (isEmailValid || userExists) &&
+      isNameValid &&
+      isPasswordValid &&
+      isPhoneNumberValid &&
+      isColourValid
+    );
+  };
 
-    const colors = ['blue', 'red', 'green', 'yellow', 'purple', 'black', 'orange'];
+  const handleSave = () => {
+    const validForm = validateForm();
 
+    if (!validForm) {
+      return;
+    }
+    const updatedUser = {
+      ...user,
+      name: fullName,
+      email,
+      password,
+      phoneNumber,
+      favoriteColor,
+    };
+    let registeredAccounts =
+      JSON.parse(localStorage.getItem("registeredAccounts")) || [];
+
+    registeredAccounts = registeredAccounts.map((account) =>
+      account.email === user.email ? updatedUser : account
+    );
+
+    localStorage.setItem(
+      "registeredAccounts",
+      JSON.stringify(registeredAccounts)
+    );
+    toast.success("Information saved successful!");
+    navigate("/profile", { state: { user: updatedUser } });
+  };
+
+  const handleCancel = () => {
+    navigate("/profile", { state: { user } });
+  };
+
+  const colors = [
+    "blue",
+    "red",
+    "green",
+    "yellow",
+    "purple",
+    "black",
+    "orange",
+  ];
 
   return (
     <Container component="main" maxWidth="xs">
       <Box
         sx={{
           marginTop: 8,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
         }}
       >
-        <Typography component="h1" variant="h5" style={{ color: favoriteColor }}>
+        <Typography
+          component="h1"
+          variant="h5"
+          style={{ color: favoriteColor }}
+        >
           Edit {fullName} Profile
         </Typography>
         <Box component="form" sx={{ mt: 1 }}>
@@ -160,29 +204,48 @@ function EditProfile() {
             id="phoneNumber"
             autoComplete="tel"
             value={phoneNumber}
-            onChange={(e) => setPhoneNumber(e.target.value)}
+            onChange={(e) => {
+              const matchWithCountryCode = e.target.value.match(
+                /^(\d{1})(\d{3})(\d{3})(\d{4})$/
+              );
+              const matchWithoutCountryCode = e.target.value.match(
+                /^(\d{3})(\d{3})(\d{4})$/
+              );
+
+              if (matchWithCountryCode) {
+                setPhoneNumber(
+                  `+${matchWithCountryCode[1]} ${matchWithCountryCode[2]} ${matchWithCountryCode[3]} ${matchWithCountryCode[4]}`
+                );
+              } else if (matchWithoutCountryCode) {
+                setPhoneNumber(
+                  `+1 ${matchWithoutCountryCode[1]} ${matchWithoutCountryCode[2]} ${matchWithoutCountryCode[3]}`
+                );
+              } else {
+                setPhoneNumber(e.target.value);
+              }
+            }}
             error={phoneError}
             helperText={phoneError}
           />
-         <Grid item xs={12}>
-              <TextField
-                variant="outlined"
-                //required
-                fullWidth
-                select
-                label="Favorite Color"
-                value={favoriteColor}
-                onChange={(e) => setFavoriteColor(e.target.value, "colour")}
-                error={colourError}
-                helperText={'Please select a colour'}
-              >
-                {colors.map((color) => (
-                  <MenuItem key={color} value={color}>
-                    {color.charAt(0).toUpperCase() + color.slice(1)}
-                  </MenuItem>
-                ))}
-              </TextField>
-            </Grid>
+          <Grid item xs={12}>
+            <TextField
+              variant="outlined"
+              //required
+              fullWidth
+              select
+              label="Favorite Color"
+              value={favoriteColor}
+              onChange={(e) => setFavoriteColor(e.target.value, "colour")}
+              error={colourError}
+              helperText={"Please select a colour"}
+            >
+              {colors.map((color) => (
+                <MenuItem key={color} value={color}>
+                  {color.charAt(0).toUpperCase() + color.slice(1)}
+                </MenuItem>
+              ))}
+            </TextField>
+          </Grid>
           <Grid container spacing={2}>
             <Grid item xs={6}>
               <Button

@@ -1,15 +1,24 @@
-import React, { useState } from 'react';
-import { toast } from 'react-toastify';
-import { Link, useNavigate } from 'react-router-dom';
-import { Avatar, Button, TextField, Grid, Typography, Box, Container, Alert } from '@mui/material';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import { styled } from '@mui/system';
+import React, { useState } from "react";
+import { toast } from "react-toastify";
+import { Link, useNavigate } from "react-router-dom";
+import {
+  Avatar,
+  Button,
+  TextField,
+  Grid,
+  Typography,
+  Box,
+  Container,
+  Alert,
+} from "@mui/material";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import { styled } from "@mui/system";
 
 const StyledContainer = styled(Container)(({ theme }) => ({
   marginTop: theme.spacing(8),
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
 }));
 
 const StyledAvatar = styled(Avatar)(({ theme }) => ({
@@ -17,8 +26,8 @@ const StyledAvatar = styled(Avatar)(({ theme }) => ({
   backgroundColor: theme.palette.secondary.main,
 }));
 
-const StyledForm = styled('form')(({ theme }) => ({
-  width: '100%',
+const StyledForm = styled("form")(({ theme }) => ({
+  width: "100%",
   marginTop: theme.spacing(1),
 }));
 
@@ -27,26 +36,29 @@ const StyledButton = styled(Button)(({ theme }) => ({
 }));
 
 function Login() {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const handleLogin = (e) => {
-        e.preventDefault();
-        const registeredAccounts = JSON.parse(localStorage.getItem('registeredAccounts')) || [];
+    e.preventDefault();
+    const registeredAccounts =
+      JSON.parse(localStorage.getItem("registeredAccounts")) || [];
 
-        const user = registeredAccounts.find(account => account.email === email && account.password === password);
+    const user = registeredAccounts.find(
+      (account) => account.email === email && account.password === password
+    );
 
-        if (user) {
-            setError('');
-            toast.success('Login successful!');
-            navigate('/profile', { state: { user } });
-        } else {
-            setError('No user with these credentials is found. Please try again');
-        }
-    };
+    if (user) {
+      setError("");
+      toast.success("Login successful!");
+      navigate("/profile", { state: { user } });
+    } else {
+      setError("No user with these credentials is found. Please try again");
+    }
+  };
 
   return (
     <StyledContainer component="main" maxWidth="xs">
@@ -57,10 +69,10 @@ function Login() {
         Sign in
       </Typography>
       {error && (
-          <Alert severity="error" sx={{ width: '100%', mt: 2 }}>
-            {error}
-          </Alert>
-        )}
+        <Alert severity="error" sx={{ width: "100%", mt: 2 }}>
+          {error}
+        </Alert>
+      )}
       <StyledForm onSubmit={handleLogin}>
         <TextField
           variant="outlined"
@@ -88,14 +100,17 @@ function Login() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        <StyledButton type="submit" fullWidth variant="contained" color="primary">
+        <StyledButton
+          type="submit"
+          fullWidth
+          variant="contained"
+          color="primary"
+        >
           Sign In
         </StyledButton>
         <Grid container>
           <Grid item>
-            <Link to="/signup">
-              {"Don't have an account? Sign Up"}
-            </Link>
+            <Link to="/signup">{"Don't have an account? Sign Up"}</Link>
           </Grid>
         </Grid>
       </StyledForm>
