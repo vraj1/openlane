@@ -16,7 +16,7 @@ export function validateEmail(email) {
     return  emailRegex.test(email)
     
 }
-export function checkUserExists(email){
+export function checkUserDoesNotExist(email){
     const accounts = JSON.parse(localStorage.getItem('registeredAccounts'));
     
     if(accounts){

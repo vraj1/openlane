@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { toast } from 'react-toastify';
 import { Link, useNavigate } from 'react-router-dom';
 import { Avatar, Button, TextField, Grid, Typography, Box, Container, Alert } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
@@ -40,6 +41,7 @@ function Login() {
 
         if (user) {
             setError('');
+            toast.success('Login successful!');
             navigate('/profile', { state: { user } });
         } else {
             setError('No user with these credentials is found. Please try again');

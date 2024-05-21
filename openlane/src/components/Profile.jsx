@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import { Button, Container, Typography, Box, Grid, Alert } from '@mui/material';
 
 function Profile() {
@@ -15,6 +16,7 @@ function Profile() {
         }
 
         const timer = setTimeout(() => {
+            toast.warning('Session timed out');
             setTimeoutMessage('Session timed out');
             //localStorage.removeItem('loggedInUserEmail');
             navigate('/login');
@@ -32,6 +34,7 @@ function Profile() {
         const updatedAccounts = registeredAccounts.filter(account => account.email !== user.email);
         localStorage.setItem('registeredAccounts', JSON.stringify(updatedAccounts));
         //localStorage.removeItem('loggedInUserEmail');
+        toast.success('Deleted user');
         navigate('/login');
     };
 

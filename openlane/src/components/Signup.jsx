@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import { Avatar, Button, TextField, Grid, Typography, MenuItem, Box, Container } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { styled } from '@mui/system';
-import { validateEmail, validatePassword, validateName, validatePhoneNumber, validateColour, checkUserExists } from '../util';
+import { validateEmail, validatePassword, validateName, validatePhoneNumber, validateColour, checkUserDoesNotExist } from '../util';
 
 const StyledBox = styled(Box)(({ theme }) => ({
   marginTop: theme.spacing(8),
@@ -92,7 +93,7 @@ function Signup() {
 
     const validateForm = () => {
         resetErrors(); 
-        const userExists = checkUserExists(email)
+        const userExists = checkUserDoesNotExist(email)
         const isEmailValid = validateEmail(email);
         const isNameValid = validateName(fullName);
         const isPasswordValid = validatePassword(password);
@@ -148,7 +149,8 @@ function Signup() {
             localStorage.setItem('registeredAccounts', JSON.stringify(newUsers));
         }
         // resetErrors();
-        navigate('/profile');
+        toast.success('Signup Successfull!');
+        navigate('/profile', { state: { user: newAccount } });
         
     }
 
