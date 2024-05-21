@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Avatar, Button, TextField, Grid, Typography, Box, Container } from '@mui/material';
+import { Link, useNavigate } from 'react-router-dom';
+import { Avatar, Button, TextField, Grid, Typography, Box, Container, Alert } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { styled } from '@mui/system';
 
@@ -26,14 +26,25 @@ const StyledButton = styled(Button)(({ theme }) => ({
 }));
 
 function Login() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Handle login logic here
-    console.log('Logging in with', { email, password });
-  };
+    const navigate = useNavigate();
+
+  const handleLogin = (e) => {
+        e.preventDefault();
+        const registeredAccounts = JSON.parse(localStorage.getItem('registeredAccounts')) || [];
+
+        const user = registeredAccounts.find(account => account.email === email && account.password === password);
+
+        if (user) {
+            setError('');
+            navigate('/profile', { state: { user } });
+        } else {
+            setError('No user with these credentials is found. Please try again');
+        }
+    };
 
   return (
     <StyledContainer component="main" maxWidth="xs">
@@ -43,7 +54,12 @@ function Login() {
       <Typography component="h1" variant="h5">
         Sign in
       </Typography>
-      <StyledForm onSubmit={handleSubmit}>
+      {error && (
+          <Alert severity="error" sx={{ width: '100%', mt: 2 }}>
+            {error}
+          </Alert>
+        )}
+      <StyledForm onSubmit={handleLogin}>
         <TextField
           variant="outlined"
           margin="normal"
