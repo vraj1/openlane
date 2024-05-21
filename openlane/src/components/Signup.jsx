@@ -12,7 +12,10 @@ import {
   Container,
 } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+
 import { styled } from "@mui/system";
+import "react-phone-number-input/style.css";
+import { parsePhoneNumberFromString } from "libphonenumber-js";
 import {
   validateEmail,
   validatePassword,
@@ -43,6 +46,8 @@ const StyledButton = styled(Button)(({ theme }) => ({
 }));
 
 function Signup() {
+  const navigate = useNavigate();
+  const [isSubmitting, setisSubmitting] = useState(false);
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -56,8 +61,6 @@ function Signup() {
   const [phoneError, setPhoneError] = useState(false);
   const [colourError, setColourError] = useState(false);
 
-  const navigate = useNavigate();
-
   const setFormElement = (e, id) => {
     switch (id) {
       case "fullName":
@@ -70,21 +73,6 @@ function Signup() {
         setPassword(e);
         break;
       case "number":
-        const matchWithCountryCode = e.match(/^(\d{1})(\d{3})(\d{3})(\d{4})$/);
-        const matchWithoutCountryCode = e.match(/^(\d{3})(\d{3})(\d{4})$/);
-
-        if (matchWithCountryCode) {
-          setPhoneNumber(
-            `+${matchWithCountryCode[1]} ${matchWithCountryCode[2]} ${matchWithCountryCode[3]} ${matchWithCountryCode[4]}`
-          );
-          break;
-        } else if (matchWithoutCountryCode) {
-          setPhoneNumber(
-            `+1 ${matchWithoutCountryCode[1]} ${matchWithoutCountryCode[2]} ${matchWithoutCountryCode[3]}`
-          );
-          break;
-        }
-
         setPhoneNumber(e);
         break;
 
@@ -130,7 +118,7 @@ function Signup() {
     }
     if (!isPhoneNumberValid) {
       setPhoneError(
-        "Please enter a valid phone number such as +1 561 512 8712"
+        "Please enter a valid phone number such as +1 561 512 8712, if you are adding an area code please begin with a + followed by the area code"
       );
     }
     if (!isColourValid) {
@@ -148,17 +136,19 @@ function Signup() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
+    setisSubmitting(true);
     const validForm = validateForm();
 
     if (!validForm) {
+      setisSubmitting(false);
       return;
     } else {
+      const parsedNumber = parsePhoneNumberFromString(phoneNumber);
       const newAccount = {
         name: fullName,
         email: email,
         password: password,
-        phoneNumber: phoneNumber,
+        phoneNumber: parsedNumber.format("E.164"),
         favoriteColor: favoriteColor,
       };
       const registeredAccounts = JSON.parse(
@@ -174,6 +164,7 @@ function Signup() {
         const newUsers = [newAccount];
         localStorage.setItem("registeredAccounts", JSON.stringify(newUsers));
       }
+      setisSubmitting(false);
       toast.success("Signup Successfull!");
       navigate("/profile", { state: { user: newAccount } });
     }
@@ -250,6 +241,11 @@ function Signup() {
           </Grid>
 
           <Grid item xs={12}>
+            {/* <PhoneInput
+            name="phoneNumber"
+            placeholder="Enter phone number"
+            value={phoneNumber}
+            onChange={setPhoneNumber} /> */}
             <TextField
               variant="outlined"
               fullWidth
@@ -289,6 +285,7 @@ function Signup() {
             fullWidth
             variant="contained"
             color="primary"
+            disabled={isSubmitting}
           >
             Sign Up
           </StyledButton>

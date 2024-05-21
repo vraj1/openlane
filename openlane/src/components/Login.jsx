@@ -7,7 +7,6 @@ import {
   TextField,
   Grid,
   Typography,
-  Box,
   Container,
   Alert,
 } from "@mui/material";
@@ -36,14 +35,15 @@ const StyledButton = styled(Button)(({ theme }) => ({
 }));
 
 function Login() {
+  const navigate = useNavigate();
+  const [isSubmitting, setisSubmitting] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  const navigate = useNavigate();
-
   const handleLogin = (e) => {
     e.preventDefault();
+    setisSubmitting(true);
     const registeredAccounts =
       JSON.parse(localStorage.getItem("registeredAccounts")) || [];
 
@@ -52,10 +52,12 @@ function Login() {
     );
 
     if (user) {
+      setisSubmitting(false);
       setError("");
       toast.success("Login successful!");
       navigate("/profile", { state: { user } });
     } else {
+      setisSubmitting(false);
       setError("No user with these credentials is found. Please try again");
     }
   };
@@ -105,6 +107,7 @@ function Login() {
           fullWidth
           variant="contained"
           color="primary"
+          disabled={isSubmitting}
         >
           Sign In
         </StyledButton>

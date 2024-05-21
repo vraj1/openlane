@@ -1,3 +1,5 @@
+import { parsePhoneNumberFromString } from "libphonenumber-js";
+
 export function validateEmail(email) {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -37,9 +39,12 @@ export function validatePhoneNumber(number) {
   if (!number) {
     return true;
   }
-  const validNumber = /^\+?[1-9]\d{0,2}\d{10}$/;
-
-  return validNumber.test(number.replace(/[^\d+]/g, ""));
+  const parsedNumber = parsePhoneNumberFromString(number);
+  if (parsedNumber && parsedNumber.isValid()) {
+    return true;
+  } else {
+    return false;
+  }
 }
 
 export function validateColour(colour) {

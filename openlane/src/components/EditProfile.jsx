@@ -11,6 +11,10 @@ import {
 } from "@mui/material";
 import { toast } from "react-toastify";
 import {
+  parsePhoneNumberFromString,
+  formatPhoneNumber,
+} from "libphonenumber-js";
+import {
   validateEmail,
   validatePassword,
   validateName,
@@ -24,6 +28,7 @@ function EditProfile() {
   const location = useLocation();
   const { user } = location.state;
 
+  const [isSubmitting, setisSubmitting] = useState(false);
   const [fullName, setFullName] = useState(user.name);
   const [email, setEmail] = useState(user.email);
   const [password, setPassword] = useState(user.password);
@@ -90,9 +95,11 @@ function EditProfile() {
   };
 
   const handleSave = () => {
+    setisSubmitting(true);
     const validForm = validateForm();
 
     if (!validForm) {
+      setisSubmitting(false);
       return;
     }
     const updatedUser = {
@@ -114,6 +121,7 @@ function EditProfile() {
       "registeredAccounts",
       JSON.stringify(registeredAccounts)
     );
+    setisSubmitting(false);
     toast.success("Information saved successful!");
     navigate("/profile", { state: { user: updatedUser } });
   };
@@ -147,7 +155,7 @@ function EditProfile() {
           variant="h5"
           style={{ color: favoriteColor }}
         >
-          Edit {fullName} Profile
+          Edit {user?.name} Profile
         </Typography>
         <Box component="form" sx={{ mt: 1 }}>
           <TextField
@@ -204,26 +212,7 @@ function EditProfile() {
             id="phoneNumber"
             autoComplete="tel"
             value={phoneNumber}
-            onChange={(e) => {
-              const matchWithCountryCode = e.target.value.match(
-                /^(\d{1})(\d{3})(\d{3})(\d{4})$/
-              );
-              const matchWithoutCountryCode = e.target.value.match(
-                /^(\d{3})(\d{3})(\d{4})$/
-              );
-
-              if (matchWithCountryCode) {
-                setPhoneNumber(
-                  `+${matchWithCountryCode[1]} ${matchWithCountryCode[2]} ${matchWithCountryCode[3]} ${matchWithCountryCode[4]}`
-                );
-              } else if (matchWithoutCountryCode) {
-                setPhoneNumber(
-                  `+1 ${matchWithoutCountryCode[1]} ${matchWithoutCountryCode[2]} ${matchWithoutCountryCode[3]}`
-                );
-              } else {
-                setPhoneNumber(e.target.value);
-              }
-            }}
+            onChange={(e) => setPhoneNumber(e.target.value)}
             error={phoneError}
             helperText={phoneError}
           />
@@ -252,6 +241,7 @@ function EditProfile() {
                 fullWidth
                 variant="contained"
                 color="primary"
+                disabled={isSubmitting}
                 onClick={handleSave}
               >
                 Save
