@@ -118,7 +118,7 @@ function Signup() {
     }
     if (!isPhoneNumberValid) {
       setPhoneError(
-        "Please enter a valid phone number such as +1 561 512 8712, if you are adding an area code please begin with a + followed by the area code"
+        "Please enter a valid phone number such as +1 561 512 8712, please add an area code. Begin with a + followed by the area code"
       );
     }
     if (!isColourValid) {
